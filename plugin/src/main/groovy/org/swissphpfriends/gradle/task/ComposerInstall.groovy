@@ -1,6 +1,7 @@
 package org.swissphpfriends.gradle.task
 
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.GradleScriptException
 import org.swissphpfriends.gradle.AbstractBaseTask
 
 class ComposerInstall extends AbstractBaseTask {
@@ -28,6 +29,9 @@ class ComposerInstall extends AbstractBaseTask {
                 .start()
         composerInstallProcess.inputStream.eachLine { println it }
         composerInstallProcess.waitFor()
+        if (composerInstallProcess.exitValue()) {
+            throw new GradleScriptException("Error in php composer.phar install", null)
+        }
     }
 
     /**
@@ -69,7 +73,7 @@ class ComposerInstall extends AbstractBaseTask {
         installComposerProcess.waitFor();
 
         if (installComposerProcess.exitValue()) {
-            println "Composer installation failed!"
+            throw new GradleScriptException("Composer installation failed!", null)
         }
 
         File installer = new File(path);
@@ -87,7 +91,7 @@ class ComposerInstall extends AbstractBaseTask {
         composerSelfupdateProcess.waitFor()
 
         if (composerSelfupdateProcess.exitValue()) {
-            println "Composer installation failed!"
+            throw new GradleScriptException("Composer installation failed!", null)
         }
     }
 }
