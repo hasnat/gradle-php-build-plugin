@@ -1,19 +1,64 @@
 apply plugin: 'groovy'
 apply plugin: 'maven'
 
+import java.text.SimpleDateFormat
+Date buildTimeAndDate = new Date()
+ext {
+    buildDate = new SimpleDateFormat('yyyy-MM-dd').format(buildTimeAndDate)
+    buildTime = new SimpleDateFormat('HH:mm:ss.SSSZ').format(buildTimeAndDate)
+}
 dependencies {
     compile gradleApi()
     compile localGroovy()
 }
-
+artifacts {
+    archives jar
+}
 repositories {
     mavenCentral()
+    jcenter()
+}
+apply plugin: "com.gradle.plugin-publish"
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.7"
+    }
+}
+apply plugin: "com.gradle.plugin-publish"
+
+jar {
+    manifest {
+        attributes(
+                'Built-By': System.properties['user.name'],
+                'Created-By': System.properties['java.version'] + ' (' + System.properties['java.vendor'] + ' ' + System.properties["java.vm.version"] + ')',
+                'Build-Date': project.buildDate,
+                'Build-Time': project.buildTime,
+                'Specification-Title': project.name,
+                'Specification-Version': project.version,
+                'Specification-Vendor': 'Tobias Schulte',
+                'Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Implementation-Vendor': 'Tobias Schulte'
+        )
+    }
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: uri('../repo'))
+pluginBundle {
+
+    website = 'https://github.com/hasnat/gradle-php-build-plugin'
+    vcsUrl = 'https://github.com/hasnat/gradle-php-build-plugin'
+    description = 'Build php project depending on composer install'
+    tags = ['composer', 'php', 'build']
+
+    plugins {
+        PhpBuildPlugin {
+            id = 'org.hasnat.php-build-plugin'
+            displayName = 'PHP Build Plugin'
         }
     }
 }

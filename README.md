@@ -4,6 +4,11 @@
 
 [![Build Status](https://travis-ci.org/swiss-php-friends/gradle-php-build-plugin.svg?branch=master)](https://travis-ci.org/swiss-php-friends/gradle-php-build-plugin)
 
+## Gradle plugin
+plugin published to https://plugins.gradle.org/plugin/org.hasnat.php-build-plugin
+to publish plugin try
+`./gradlew -b plugin/build.gradle clean publishPlugins`
+
 ## Featues
 
 - Automatic composer installation and/or update
